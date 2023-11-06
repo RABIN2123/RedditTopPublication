@@ -1,4 +1,4 @@
-package com.example.reddittoppublication
+package com.example.reddittoppublication.windowpicture
 
 import androidx.fragment.app.Fragment
 

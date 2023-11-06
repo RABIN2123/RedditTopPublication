@@ -1,4 +1,4 @@
-package com.example.reddittoppublication
+package com.example.reddittoppublication.postlist
 
 import androidx.fragment.app.Fragment
 
