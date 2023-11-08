@@ -8,7 +8,7 @@
 
 
     <LinearLayout
-        android:id="@+id/topPost"
+        android:id="@+id/top_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -69,6 +69,7 @@
             app:srcCompat="@drawable/baseline_comment_24" />
 
         <TextView
+            android:id="@+id/numComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

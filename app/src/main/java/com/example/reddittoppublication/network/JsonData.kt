@@ -4,23 +4,34 @@ import com.google.gson.annotations.SerializedName
 
 data class JsonData(
     @SerializedName("data")
-    val data: List<Children>
+    val data: DataObject
+
+)
+
+data class DataObject(
+    @SerializedName("after")
+    val nextPage: String,
+    @SerializedName("children")
+    val children: List<Children>
 )
 
 data class Children(
-    @SerializedName("after")
-    val nextPage: String,
-    @SerializedName("data")
-    val data: List<DataChildren>
+    val data: DataChildren
 )
 
 data class DataChildren(
+    @SerializedName("selftext_html")
+    val content: String,
+    @SerializedName("name")
+    val id: String,
     @SerializedName("author")
     val author: String,
     @SerializedName("title")
     val title: String,
     @SerializedName("num_comments")
     val numComments: Int,
-//    val date: String,
+    @SerializedName("created")
+    val created: Long,
+    @SerializedName("thumbnail")
     val thumbnail: String
 )
