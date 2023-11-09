@@ -16,16 +16,28 @@ class DataViewModel(private val repository: Repository) : ViewModel() {
     val state: StateFlow<DataList> = _state
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.value = repository.getPosts(null)
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                _state.value = repository.getPosts(null)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     fun nextPage() {
         viewModelScope.launch(Dispatchers.IO) {
-            val newState = repository.getPosts(_state.value.nextPage)
-            _state.update { ui ->
-                ui.copy(data = _state.value.data.plus(newState.data), nextPage = newState.nextPage)
+            try {
+                val newState = repository.getPosts(_state.value.nextPage)
+                _state.update { ui ->
+                    ui.copy(
+                        data = _state.value.data.plus(newState.data),
+                        nextPage = newState.nextPage
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 

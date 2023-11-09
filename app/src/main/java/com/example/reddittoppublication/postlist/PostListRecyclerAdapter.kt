@@ -1,12 +1,14 @@
 package com.example.reddittoppublication.postlist
 
 import android.content.Context
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.reddittoppublication.R
 import com.example.reddittoppublication.databinding.FragmentPostItemBinding
 import com.example.reddittoppublication.item.Data
 
@@ -39,9 +41,19 @@ class PostListRecyclerAdapter(
                 title.text = item.title
                 numComments.text = item.numComments.toString()
                 datePublication.text = item.created
-                Glide.with(applicationContext).load(item.thumbnail).into(thumbnail)
+                if (item.content != null) {
+                    content.text = Html.fromHtml(item.content, Html.FROM_HTML_MODE_COMPACT)
+                }
+                //TODO() сделать вырезку ссылки из images->source->url c третьего / по ?
+                Glide.with(applicationContext).load(item.thumbnail)
+                    .placeholder(R.drawable.loading_screen).into(thumbnail)
                 root.setOnClickListener {
-                    onItemClicked(item.thumbnail)
+                    if (item.img.endsWith(".jpg") || item.img.endsWith(".png") || item.img.endsWith(
+                            ".gifv"
+                        )
+                    ) {
+                        onItemClicked(item.img)
+                    }
                 }
             }
         }
