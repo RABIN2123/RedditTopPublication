@@ -1,10 +1,11 @@
-package com.example.reddittoppublication
+package com.example.reddittoppublication.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.example.reddittoppublication.postlist.PostListFragment
+import com.example.reddittoppublication.R
+import com.example.reddittoppublication.presentation.fragments.postlist.PostListFragment
 
 class MainActivity : AppCompatActivity() {
 

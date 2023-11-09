@@ -1,24 +1,29 @@
-package com.example.reddittoppublication.postlist
+package com.example.reddittoppublication.presentation.fragments.postlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.reddittoppublication.R
 import com.example.reddittoppublication.databinding.FragmentPostListBinding
-import com.example.reddittoppublication.network.ApiHelperImpl
-import com.example.reddittoppublication.network.Repository
-import com.example.reddittoppublication.network.RetrofitBuilder
-import com.example.reddittoppublication.viewmodel.DataViewModel
-import com.example.reddittoppublication.windowpicture.WindowPictureFragment
+import com.example.reddittoppublication.domain.model.ErrorStatus
+import com.example.reddittoppublication.data.datasource.ApiHelperImpl
+import com.example.reddittoppublication.domain.repository.Repository
+import com.example.reddittoppublication.data.datasource.RetrofitBuilder
+import com.example.reddittoppublication.presentation.fragments.windowpicture.WindowPictureFragment
 import kotlinx.coroutines.launch
 
 class PostListFragment : Fragment() {
+
     private val adapter by lazy {
-        PostListRecyclerAdapter(onItemClicked, onLoadNextPage)
+        PostListRecyclerAdapter(
+            onItemClicked = onItemClicked,
+            onLoadNextPage = viewModel::nextPage
+        )
     }
     private val viewModel: DataViewModel by viewModels {
         DataViewModel.provideFactory(Repository(ApiHelperImpl(RetrofitBuilder.apiService)))
@@ -31,9 +36,6 @@ class PostListFragment : Fragment() {
             addToBackStack(null)
             commit()
         }
-    }
-    private val onLoadNextPage: () -> Unit = {
-        viewModel.nextPage()
     }
 
     private var binding: FragmentPostListBinding? = null
@@ -49,7 +51,8 @@ class PostListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUi()
-        listenerState()
+        observerData()
+        observerError()
     }
 
     private fun initUi() {
@@ -58,12 +61,31 @@ class PostListFragment : Fragment() {
         }
     }
 
-    private fun listenerState() {
+    private fun observerData() {
         lifecycleScope.launch {
             viewModel.state.collect { value ->
-                adapter.submitList(value.data)
+                adapter.submitList(value.posts)
             }
         }
+    }
 
+    private fun observerError() {
+        lifecycleScope.launch {
+            viewModel.uiState.collect { error ->
+                when (error) {
+                    ErrorStatus.FAIL_CONNECT -> toastShow("Please turn on internet and restart app")
+                    ErrorStatus.OTHER -> toastShow("Oops. Unexpected Error :-(")
+                    ErrorStatus.NONE -> {}
+                }
+            }
+        }
+    }
+
+    private fun toastShow(message: String) {
+        binding?.apply {
+            errorImg.visibility = View.VISIBLE
+            postList.visibility = View.INVISIBLE
+        }
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 }
