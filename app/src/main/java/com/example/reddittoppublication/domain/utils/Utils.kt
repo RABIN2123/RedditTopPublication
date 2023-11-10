@@ -3,10 +3,18 @@ package com.example.reddittoppublication.domain.utils
 import com.google.gson.JsonObject
 import kotlin.math.ceil
 
-fun parseJsonToMap(jsonObj: JsonObject): String {
-    val key = jsonObj[jsonObj.keySet()
-        .first()].asJsonObject["p"].asJsonArray[0].asJsonObject["u"].toString()
-    return key.replace("preview", "i").substringBefore("?").replace("\"", "")
+fun parseJsonToMap(jsonObj: JsonObject): List<String> {
+    val urlList = mutableListOf<String>()
+    jsonObj.entrySet().forEach { item ->
+        urlList.add(
+            item.value.asJsonObject["p"].asJsonArray[0].asJsonObject["u"].toString()
+                .replace("preview", "i")
+                .substringBefore("?")
+                .replace("\"", "")
+        )
+    }
+
+    return urlList
 }
 
 fun convertTime(created: Long): String {

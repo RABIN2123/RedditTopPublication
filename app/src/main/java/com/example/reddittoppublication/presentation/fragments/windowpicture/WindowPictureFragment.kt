@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,12 +26,13 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import java.io.Serializable
 import java.util.Date
 
 
 class WindowPictureFragment : Fragment() {
 
-    private val url by lazy { arguments?.getString(URL_ARG_PARAM) ?: "" }
+    private val url by lazy { (arguments?.getSerializable(URL_ARG_PARAM) ?: "") as List<String> }
     private var binding: FragmentWindowPictureBinding? = null
 
     override fun onCreateView(
@@ -50,32 +52,36 @@ class WindowPictureFragment : Fragment() {
 
     private fun initUi() {
         binding?.apply {
-            saveButton.setOnClickListener {
-                saveImageToStorage()
-            }
-
-            if (url.endsWith(".gif")) {
+            if (url[0].endsWith(".gif")) {
                 saveButton.isVisible = false
             }
-
-            Glide.with(requireContext())
-                .load(url)
-                .into(fullscreenImage)
+            carouselImage.setImageListener { position, imageView ->
+                imageView.scaleType = ImageView.ScaleType.FIT_XY
+                imageView.adjustViewBounds = true
+                Glide.with(requireContext())
+                    .load(url[position])
+                    .centerInside()
+                    .into(imageView)
+            }
+            saveButton.setOnClickListener {
+                saveImageToStorage(url[carouselImage.currentItem])
+            }
+            carouselImage.pageCount = url.size
         }
 
     }
 
-    private fun saveImageToStorage() {
+    private fun saveImageToStorage(image: String) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q ||
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
-        ) saveImage()
+        ) saveImage(image)
         else requestPermissions()
     }
 
-    private fun saveImage() {
+    private fun saveImage(image: String) {
         val imageName = "reddit_image_${Date()}.jpg"
         var fos: OutputStream? = null
         try {
@@ -100,7 +106,7 @@ class WindowPictureFragment : Fragment() {
                 fos?.use { outStream ->
                     val bitmap: Bitmap = Glide.with(requireContext())
                         .asBitmap()
-                        .load(url)
+                        .load(image)
                         .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .get()
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
@@ -124,9 +130,9 @@ class WindowPictureFragment : Fragment() {
 
         private const val URL_ARG_PARAM = "url"
 
-        fun newInstance(url: String) = WindowPictureFragment().apply {
+        fun newInstance(url: List<String>) = WindowPictureFragment().apply {
             arguments = Bundle().apply {
-                putString(URL_ARG_PARAM, url)
+                putSerializable(URL_ARG_PARAM, url as Serializable)
             }
         }
     }

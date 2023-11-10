@@ -19,7 +19,7 @@ data class PostPage(
         val numComments: Int = 0,
         val content: String? = null,
         val thumbnail: String = "",
-        val img: String = "",
+        val img: List<String> = listOf(),
         val postHint: String? = ""
     )
 }
@@ -30,7 +30,6 @@ fun TopRedditHolderResponse.toDomain(): PostPage {
             val newImage = if (item.data.mediaMetadata != null) {
                 parseJsonToMap(item.data.mediaMetadata)
             } else null
-
             PostPage.Post(
                 id = item.data.id,
                 created = convertTime(item.data.created),
@@ -49,7 +48,7 @@ fun TopRedditHolderResponse.toDomain(): PostPage {
                 thumbnail =
                 if (!item.data.imgFullSize.endsWith(".gif") && item.data.thumbnail != "image")
                     item.data.thumbnail else item.data.imgFullSize,
-                img = newImage ?: item.data.imgFullSize,
+                img = (newImage ?: listOf(item.data.imgFullSize)),
                 postHint = item.data.hint
             )
         }.filter { item -> item.postHint != "hosted:video" && item.postHint != "link" },

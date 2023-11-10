@@ -28,7 +28,7 @@ class PostListFragment : Fragment() {
     private val viewModel: DataViewModel by viewModels {
         DataViewModel.provideFactory(Repository(ApiHelperImpl(RetrofitBuilder.apiService)))
     }
-    private val onItemClicked: (String) -> Unit = { item ->
+    private val onItemClicked: (List<String>) -> Unit = { item ->
         val fragmentManager = requireActivity().supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
         transaction.apply {

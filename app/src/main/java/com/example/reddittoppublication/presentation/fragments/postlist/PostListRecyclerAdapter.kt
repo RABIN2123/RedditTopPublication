@@ -11,7 +11,7 @@ import com.example.reddittoppublication.databinding.ListItemPostBinding
 import com.example.reddittoppublication.domain.model.PostPage
 
 class PostListRecyclerAdapter(
-    private val onItemClicked: (String) -> Unit,
+    private val onItemClicked: (List<String>) -> Unit,
     private val onLoadNextPage: (() -> Unit)? = null
 ) : ListAdapter<PostPage.Post, PostListRecyclerAdapter.MyViewHolder>(ItemDiffCallBack()) {
 
@@ -30,7 +30,7 @@ class PostListRecyclerAdapter(
 
     class MyViewHolder(private val binding: ListItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: PostPage.Post, onItemClicked: (String) -> Unit) {
+        fun bind(item: PostPage.Post, onItemClicked: (List<String>) -> Unit) {
             val context = binding.root.context
 
             with(binding) {
@@ -53,9 +53,9 @@ class PostListRecyclerAdapter(
                 }
                 thumbnail.setOnClickListener {
                     if (
-                        item.img.endsWith(".jpg") ||
-                        item.img.endsWith(".png") ||
-                        item.img.endsWith(".gif")
+                        item.img.first().endsWith(".jpg") ||
+                        item.img.first().endsWith(".png") ||
+                        item.img.first().endsWith(".gif")
                     ) {
                         onItemClicked(item.img)
                     }
