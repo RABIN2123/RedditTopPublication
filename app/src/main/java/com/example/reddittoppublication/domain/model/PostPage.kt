@@ -46,7 +46,9 @@ fun TopRedditHolderResponse.toDomain(): PostPage {
                     ""
                 },
                 numComments = item.data.numComments,
-                thumbnail = if (!item.data.imgFullSize.endsWith(".gif")) item.data.thumbnail else item.data.imgFullSize,
+                thumbnail =
+                if (!item.data.imgFullSize.endsWith(".gif") && item.data.thumbnail != "image")
+                    item.data.thumbnail else item.data.imgFullSize,
                 img = newImage ?: item.data.imgFullSize,
                 postHint = item.data.hint
             )

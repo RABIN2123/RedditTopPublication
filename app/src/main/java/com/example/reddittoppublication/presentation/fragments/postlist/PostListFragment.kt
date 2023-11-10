@@ -73,8 +73,8 @@ class PostListFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.uiState.collect { error ->
                 when (error) {
-                    ErrorStatus.FAIL_CONNECT -> toastShow("Please turn on internet and restart app")
-                    ErrorStatus.OTHER -> toastShow("Oops. Unexpected Error :-(")
+                    ErrorStatus.FAIL_CONNECT -> toastShow(getString(R.string.fail_connect))
+                    ErrorStatus.OTHER -> toastShow(getString(R.string.other_error))
                     ErrorStatus.NONE -> {}
                 }
             }

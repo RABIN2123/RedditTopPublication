@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RedditTopPublication</string>
+    <string name="fail_connect">Please turn on internet and restart app</string>
+    <string name="other_error">Oops. Unexpected Error :-(</string>
 </resources>

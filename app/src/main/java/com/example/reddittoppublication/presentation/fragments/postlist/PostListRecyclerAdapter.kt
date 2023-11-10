@@ -45,7 +45,6 @@ class PostListRecyclerAdapter(
                     Glide.with(context)
                         .load(item.thumbnail)
                         .placeholder(R.drawable.loading_screen)
-                        .fitCenter()
                         .into(thumbnail)
                 } else {
                     Glide.with(context)
