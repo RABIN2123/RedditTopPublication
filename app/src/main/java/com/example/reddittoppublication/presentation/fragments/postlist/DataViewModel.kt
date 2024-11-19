@@ -62,6 +62,7 @@ class DataViewModel(private val repository: Repository) : ViewModel() {
     }
 
     companion object {
+        @Suppress("UNCHECKED_CAST")
         fun provideFactory(repository: Repository): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {

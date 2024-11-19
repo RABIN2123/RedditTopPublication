@@ -55,7 +55,8 @@ class PostListRecyclerAdapter(
                     if (
                         item.img.endsWith(".jpg") ||
                         item.img.endsWith(".png") ||
-                        item.img.endsWith(".gif")
+                        item.img.endsWith(".gif") ||
+                        item.img.endsWith(".jpeg")
                     ) {
                         onItemClicked(item.img)
                     }
